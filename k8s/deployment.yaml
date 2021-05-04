@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-java
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: hello-java
+  template:
+    metadata:
+      labels:
+        app: hello-java
+    spec:
+
+      volumes:
+        - name: volume-configuration
+          configMap:
+            name: mounted-db-configuration
+            items:
+              - key: database-config.yaml
+                path: database-config.yaml
+
+        - name: volume-secret-configuration
+          secret:
+            secretName: database-password
+
+      containers:
+        - name: hello-java
+          image: albertoimpl/hello-java
+
+          volumeMounts:
+            - mountPath: /database
+              name: volume-configuration
+            - mountPath: /mysecrets
+              name: volume-secret-configuration
+
+          envFrom:
+            - configMapRef:
+                name: database-configuration
+
+          ports:
+            - containerPort: 8080

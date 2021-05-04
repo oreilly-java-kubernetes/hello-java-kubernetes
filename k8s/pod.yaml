@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: hello-java
+  labels:
+    app: hello-java
+spec:
+  containers:
+    - name: hello-java
+      image: albertoimpl/hello-java
+      ports:
+        - containerPort: 8080
